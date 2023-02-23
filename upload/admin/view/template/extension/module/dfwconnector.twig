@@ -1,22 +1,21 @@
-<?php
-    echo $header;
-    echo $column_left;
-?>
+{{ header }}{{ column_left }}
+
 
 <div id="content">
     <div class="page-header">
         <div class="container-fluid">
             <ul class="breadcrumb">
-                <?php foreach ($breadcrumbs as $breadcrumb) { ?>
-                <li><a href="<?php echo $breadcrumb['href']; ?>"><?php echo $breadcrumb['text']; ?></a></li>
-                <?php } ?>
+                {% for breadcrumb in breadcrumbs %}
+                    <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+                {% endfor %}
+
             </ul>
         </div>
     </div>
     <div class="container-fluid">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h1><img src="view/image/dfwconnector/logo.png" alt="" /> <?php echo $heading_title; ?></h1>
+                <h1><img src="view/image/dfwconnector/logo.png" alt="" /> {{ heading_title }}</h1>
             </div>
             <div class="bridge">
                 <div class="message"></div>
@@ -25,17 +24,17 @@
                     <div class="text-center" id="content-block"></div><br/>
                     <div class="text-center">
 
-                        <div class="progress progress-dark progress-small progress-striped active">
-                            <div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                        <div class="bridge-progress bridge-progress-dark bridge-progress-small bridge-progress-striped active">
+                            <div class="bridge-progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
 
                         <div class="store-key">
                             <span class="store-key-title">Your store key:</span>
-                            <input class="store-key-content" id="storeKey" title="Your store key" type="text" name="comment" size="40" value="<?php echo $store_key; ?>" readonly>
+                            <input class="store-key-content" id="storeKey" title="Your store key" type="text" name="comment" size="40" value="{{ store_key }}" readonly>
                             <button id="updateBridgeStoreKey" class="btn-update-store-key">Update Store Key</button>
                         </div>
 
-                        <button id="btn-setup" class="<?php echo $setup_button_class;?> btn-setup"><?php echo $setup_button; ?></button>
+                        <button id="btn-setup" class="{{ setup_button_class }} btn-setup">{{ setup_button }}</button>
 
                     </div>
 
@@ -48,18 +47,18 @@
 <script type="text/javascript">
     jQuery(document).ready(function($) {
 
-        var SELF_PATH = '<?php echo $url;?>';
-        var bridgeInstalledMsg = '<?php echo $bridge_installed_msg; ?>';
-        var bridgeNotInstalledMsg = '<?php echo $bridge_not_installed_msg; ?>';
-        var buttonInstallMsg = '<?php echo $setup_button_install; ?>';
-        var buttonUninstallMsg = '<?php echo $setup_button_uninstall; ?>';
-        var setupButton = $('.btn-setup');
+        var SELF_PATH = '{{ url }}';
+        var bridgeInstalledMsg = '{{ bridge_installed_msg }}';
+        var bridgeNotInstalledMsg = '{{ bridge_not_installed_msg }}';
+        var buttonInstallMsg = '{{ setup_button_install }}';
+        var buttonUninstallMsg = '{{ setup_button_uninstall }}';
         var contentBlockManage = $('#content-block');
         var bridgeStoreKey = $('#bridgeStoreKey');
         var storeKey = $('#storeKey');
+        var setupButton = $('.btn-setup');
         var storeBlock = $('.store-key');
         var classMessage = $('.message');
-        var progress = $('.progress');
+        var progress = $('.bridge-progress');
 
         var updateBridgeStoreKey = $('#updateBridgeStoreKey');
 
@@ -110,7 +109,7 @@
                 },
                 success: function(data) {
                     self.attr("disabled", false);
-                    progress.slideUp("fast");
+                    progress.slideUp();
                     if (actionName == 'installBridge') {
                         if (data.error != null || data.result == false) {
                             statusMessage('Can not install Connector: ' + data.error, 'error');

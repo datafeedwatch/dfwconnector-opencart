@@ -12,6 +12,7 @@ class ControllerExtensionModuleDfwconnector extends Controller
     parent::__construct($registry);
     $this->_rootDir = realpath(DIR_APPLICATION . '../');
     $this->language->load('extension/module/dfwconnector');
+    $this->load->model('setting/setting');
   }
 
   protected function _handleRequest()
@@ -28,9 +29,15 @@ class ControllerExtensionModuleDfwconnector extends Controller
       switch ($this->request->post['action']) {
         case 'installBridge':
           $result = $this->_installBridge();
+          if ($result) {
+            $this->_updateModuleStatus(1);
+          }
           break;
         case 'unInstallBridge':
           $result = $this->_unInstallBridge();
+          if ($result) {
+            $this->_updateModuleStatus(0);
+          }
           break;
         case 'updateToken':
           $token = $this->_generateStoreKey();
@@ -49,6 +56,12 @@ class ControllerExtensionModuleDfwconnector extends Controller
     );
   }
 
+  private function _updateModuleStatus($newStatus)
+  {
+    $this->model_setting_setting->editSetting('module_dfwconnector', array('module_dfwconnector_status' => $newStatus));
+    $this->config->set('module_dfwconnector_status', $newStatus);
+  }
+
   public function index()
   {
     if (($this->request->server['REQUEST_METHOD'] == 'POST')) {
@@ -63,7 +76,7 @@ class ControllerExtensionModuleDfwconnector extends Controller
 
 
       $data['heading_title'] = $this->language->get('heading_title');
-      $data['url'] = html_entity_decode($this->url->link('extension/module/dfwconnector', 'token=' . $this->session->data['token'], true));
+      $data['url'] = html_entity_decode($this->url->link('extension/module/dfwconnector', 'user_token=' . $this->session->data['user_token'], true));
 
       if (isset($this->error['warning'])) {
         $data['error_warning'] = $this->error['warning'];
@@ -83,27 +96,31 @@ class ControllerExtensionModuleDfwconnector extends Controller
 
       $data['breadcrumbs'][] = array(
         'text' => $this->language->get('text_home'),
-        'href' => $this->url->link('common/dashboard', 'token=' . $this->session->data['token'], true)
+        'href' => $this->url->link('common/dashboard', 'user_token=' . $this->session->data['user_token'], true)
       );
 
       $data['breadcrumbs'][] = array(
         'text' => $this->language->get('extension'),
-        'href' => $this->url->link('marketplace/extension', 'token=' . $this->session->data['token'] . '&type=module', true)
+        'href' => $this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=module', true)
       );
 
       $data['breadcrumbs'][] = array(
         'text' => $this->language->get('heading_title'),
-        'href' => $this->url->link('extension/module/dfwconnector', 'token=' . $this->session->data['token'], true)
+        'href' => $this->url->link('extension/module/dfwconnector', 'user_token=' . $this->session->data['user_token'], true)
       );
 
       if ($this->_isBridgeInstalled() === 3) {
         $data['store_key'] = $this->_getCurrentStoreKey();
         $data['setup_button'] = $this->language->get('setup_button_uninstall');
         $data['setup_button_class'] = 'btn-disconnect';
+        $data['module_dfwconnector_status'] = 1;
+        $this->_updateModuleStatus(1);
       } else {
         $data['store_key'] = '';
         $data['setup_button'] = $this->language->get('setup_button_install');
         $data['setup_button_class'] = 'btn-connect';
+        $data['module_dfwconnector_status'] = 0;
+        $this->_updateModuleStatus(0);
       }
 
       $data['bridge_installed_msg'] = $this->language->get('bridge_installed_msg');
@@ -334,4 +351,19 @@ class ControllerExtensionModuleDfwconnector extends Controller
       return false;
     }
   }
+
+  public function install()
+  {
+    if ($this->_installBridge()) {
+      $this->_updateModuleStatus(1);
+    }
+  }
+
+  public function uninstall()
+  {
+    if ($this->_unInstallBridge()) {
+      $this->_updateModuleStatus(0);
+    }
+  }
+
 }
