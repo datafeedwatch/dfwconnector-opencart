@@ -1,6 +1,6 @@
 <?php
 
-class ControllerModuleDfwconnector extends Controller
+class ControllerExtensionModuleDfwconnector extends Controller
 {
 
   private $_error = null;
@@ -11,7 +11,7 @@ class ControllerModuleDfwconnector extends Controller
   {
     parent::__construct($registry);
     $this->_rootDir = realpath(DIR_APPLICATION . '../');
-    $this->language->load('module/dfwconnector');
+    $this->language->load('extension/module/dfwconnector');
   }
 
   protected function _handleRequest()
@@ -52,7 +52,7 @@ class ControllerModuleDfwconnector extends Controller
   public function index()
   {
     if (($this->request->server['REQUEST_METHOD'] == 'POST')) {
-      if (!$this->user->hasPermission('modify', 'module/dfwconnector')) {
+      if (!$this->user->hasPermission('modify', 'extension/module/dfwconnector')) {
         $this->_error = $this->language->get('error_permission');
       }
 
@@ -63,7 +63,7 @@ class ControllerModuleDfwconnector extends Controller
 
 
       $data['heading_title'] = $this->language->get('heading_title');
-      $data['url'] = html_entity_decode($this->url->link('module/dfwconnector', 'token=' . $this->session->data['token'], 'SSL'));
+      $data['url'] = html_entity_decode($this->url->link('extension/module/dfwconnector', 'token=' . $this->session->data['token'], true));
 
       if (isset($this->error['warning'])) {
         $data['error_warning'] = $this->error['warning'];
@@ -79,22 +79,21 @@ class ControllerModuleDfwconnector extends Controller
 
       $data['breadcrumbs'] = array();
 
+      $data['breadcrumbs'] = array();
+
       $data['breadcrumbs'][] = array(
         'text' => $this->language->get('text_home'),
-        'href' => $this->url->link('common/home', 'token=' . $this->session->data['token'], 'SSL'),
-        'separator' => false
+        'href' => $this->url->link('common/dashboard', 'token=' . $this->session->data['token'], true)
       );
 
       $data['breadcrumbs'][] = array(
-        'text' => $this->language->get('module'),
-        'href' => $this->url->link('extension/module', 'token=' . $this->session->data['token'], 'SSL'),
-        'separator' => ' :: '
+        'text' => $this->language->get('extension'),
+        'href' => $this->url->link('marketplace/extension', 'token=' . $this->session->data['token'] . '&type=module', true)
       );
 
       $data['breadcrumbs'][] = array(
         'text' => $this->language->get('heading_title'),
-        'href' => $this->url->link('module/dfwconnector', 'token=' . $this->session->data['token'], 'SSL'),
-        'separator' => ' :: '
+        'href' => $this->url->link('extension/module/dfwconnector', 'token=' . $this->session->data['token'], true)
       );
 
       if ($this->_isBridgeInstalled() === 3) {
@@ -114,7 +113,7 @@ class ControllerModuleDfwconnector extends Controller
       $data['header'] = $this->load->controller('common/header');
       $data['column_left'] = $this->load->controller('common/column_left');
 
-      $this->response->setOutput($this->load->view('module/dfwconnector.tpl', $data));
+      $this->response->setOutput($this->load->view('extension/module/dfwconnector', $data));
     }
   }
 

@@ -1,6 +1,6 @@
 <?php
 
-$_['heading_title']        = ' DataFeedWatch Connector';
+$_['heading_title']        = 'DataFeedWatch Connector';
 
 $_['error_permission']     = 'You do not have permission.';
 $_['error_invalid_action'] = 'Action not supported';
@@ -10,4 +10,3 @@ $_['bridge_installed_msg'] = '<b>Congratulations! The plugin is installed!</b><b
 $_['bridge_not_installed_msg'] = '<p id="connector-installed-txt" style="display: block;">The connector will be installed automatically. Just click the button below and have the connection between your OpenCart store and the system needed established.</p>';
 $_['setup_button_install'] = 'Install';
 $_['setup_button_uninstall'] = 'Uninstall';
-?>
