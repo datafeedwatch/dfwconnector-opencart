@@ -32,10 +32,10 @@
                             <span class="store-key-title">Your store key:</span>
                             <input class="store-key-content" id="storeKey" title="Your store key" type="text" name="comment" size="40" value="{{ store_key }}" readonly>
                             <button id="updateBridgeStoreKey" class="btn-update-store-key">Update Store Key</button>
+                            <a id="router-link" href="https://app.datafeedwatch.com/platforms/router">Connect with DataFeedWatch</a>
                         </div>
 
                         <button id="btn-setup" class="{{ setup_button_class }} btn-setup">{{ setup_button }}</button>
-
                     </div>
 
                     <div class="clearfix"></div>
@@ -61,15 +61,18 @@
         var progress = $('.bridge-progress');
 
         var updateBridgeStoreKey = $('#updateBridgeStoreKey');
+        var routerLink = $('#router-link');
 
         if (storeKey.val() == '') {
             contentBlockManage.html(bridgeNotInstalledMsg);
             storeBlock.fadeOut();
             updateBridgeStoreKey.hide();
+            routerLink.hide();
         } else {
             contentBlockManage.html(bridgeInstalledMsg);
             storeBlock.fadeIn();
             updateBridgeStoreKey.show();
+            routerLink.show();
         }
 
         function statusMessage(message, status) {
@@ -123,6 +126,7 @@
 
                         storeBlock.fadeIn("slow");
                         updateBridgeStoreKey.fadeIn("slow");
+                        routerLink.fadeIn("slow");
                         statusMessage('Connector Installed Successfully','success');
                     } else {
                         if (data.result != true) {
@@ -137,6 +141,7 @@
                         contentBlockManage.html(bridgeNotInstalledMsg);
                         storeBlock.fadeOut("fast");
                         updateBridgeStoreKey.fadeOut("fast");
+                        routerLink.fadeOut("fast");
                         statusMessage('Connector Uninstalled Successfully','success');
                     }
                 }
